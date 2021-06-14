@@ -3,11 +3,11 @@ FROM alpine:latest
 ENV EMAIL='email@example.com'
 VOLUME ["config"]
 
-COPY autocert.sh      /usr/sbin/autocert.sh
-COPY autocertPipe.sh  /usr/sbin/autocertPipe.sh
-COPY entrypoint.sh    /entrypoint.sh
+COPY autocert.sh            /usr/sbin/autocert.sh
+COPY createAutocertPipe.sh  /usr/sbin/createAutocertPipe.sh
+COPY entrypoint.sh          /entrypoint.sh
 
-RUN chmod +x /entrypoint.sh /usr/sbin/autocert*.sh &&\
+RUN chmod +x /entrypoint.sh /usr/sbin/autocert.sh /usr/sbin/createAutocertPipe.sh &&\
     echo '*/5 * * * * autocert.sh renew' | crontab - &&\
     apk update &&\
     apk upgrade &&\

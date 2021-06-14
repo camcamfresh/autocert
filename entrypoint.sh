@@ -15,6 +15,6 @@ elif [ ! -r "/config/luadns.ini" ]; then
 fi
 
 # Start Jobs
-autocertPipe.sh &
+createAutocertPipe.sh &
 crond -f;
 exit 1;
