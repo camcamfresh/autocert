@@ -82,9 +82,9 @@ fi
 certbot "$SUBCOMMAND" \
     --agree-tos \
     --expand \
-    --config-dir "$CONFIG_DIR/data" \
+    --config-dir "/config/data" \
     --dns-luadns \
-    --dns-luadns-credentials "$CONFIG_DIR/luadns.ini" \
+    --dns-luadns-credentials "/config/luadns.ini" \
     --email "$EMAIL" \
     --non-interactive \
     $OPTIONS;
@@ -100,8 +100,8 @@ fi
 
 # Place Certificate Copies in /certs directory.
 echo 'autocert.sh: Placing Existing Certificates in /certs directory';
-CERT_PATH="$CONFIG_DIR/data/live/$CERT_NAME";
-SAVE_PATH="$CONFIG_DIR/certs/$CERT_NAME";
+CERT_PATH="/config/data/live/$CERT_NAME";
+SAVE_PATH="/config/certs/$CERT_NAME";
 if [ -d "$CERT_PATH" ]; then
     [ -d "$SAVE_PATH" ] || mkdir -p "$SAVE_PATH";
     find "$CERT_PATH" -type l -exec cp {} "$SAVE_PATH" \;;

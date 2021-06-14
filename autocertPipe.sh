@@ -4,10 +4,11 @@ if [ ! -e '/config/autocert.pipe' ]; then
     mkfifo -m 600 /config/autocert.pipe;
 fi
 
-while read MSG; do
-    case "$MSG" in
-        ('autocert.sh'*) $msg &;;
-        (*) autocert.sh &;;
-    esac
-    MSG=''
+while true; do
+    if read MSG; then
+        case "$MSG" in
+            ('autocert.sh '*) $MSG &;;
+            (*) autocert.sh &;;
+        esac
+    fi
 done < /config/autocert.pipe;
