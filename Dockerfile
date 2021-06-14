@@ -8,7 +8,7 @@ COPY createAutocertPipe.sh  /usr/sbin/createAutocertPipe.sh
 COPY entrypoint.sh          /entrypoint.sh
 
 RUN chmod +x /entrypoint.sh /usr/sbin/autocert.sh /usr/sbin/createAutocertPipe.sh &&\
-    echo '*/5 * * * * autocert.sh renew' | crontab - &&\
+    echo '0 */6 * * * autocert.sh renew' | crontab - &&\
     apk update &&\
     apk upgrade &&\
     apk add py3-pip gcc python3-dev musl-dev libffi-dev cargo openssl-dev &&\

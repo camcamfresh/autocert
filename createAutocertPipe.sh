@@ -12,3 +12,5 @@ while true; do
         esac
     fi
 done < /config/autocert.pipe;
+
+rm -f /config/autocert.pipe;

@@ -16,6 +16,7 @@ esac
 # Parse Options
 CERT_NAME='';
 DOMAINS='';
+EMAIL="$EMAIL";
 OPTIONS='';
 
 while [ "$1" != '' ]; do
@@ -69,6 +70,10 @@ if [ -n "$CERT_NAME" ]; then
     OPTIONS="$OPTIONS --cert-name $CERT_NAME";
 fi
 
+if [ -n "$EMAIL" ]; then
+    OPTIONS="$OPTIONS --email $EMAIL";
+fi
+
 # Log Operation
 if [ "$SUBCOMMAND" = 'certonly' ]; then
     echo "autocert.sh: Requesting Certificate for $CERT_NAME with domains: $DOMAINS";
@@ -85,7 +90,6 @@ certbot "$SUBCOMMAND" \
     --config-dir "/config/data" \
     --dns-luadns \
     --dns-luadns-credentials "/config/luadns.ini" \
-    --email "$EMAIL" \
     --non-interactive \
     $OPTIONS;
 

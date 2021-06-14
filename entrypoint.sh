@@ -4,14 +4,20 @@
 
 # Environment Validation
 if [ ! "$EMAIL" ]; then
-	echo 'requestSSL.sh: Enviroment Variable "EMAIL" is not set.' > /dev/stderr;
-	exit 1;
+	echo 'entrypoint.sh: WARNING: Enviroment Variable "EMAIL" is not set.';
 elif [ ! -d "/config" ]; then
-	echo 'requestSSL.sh: Directory "/config" was not found.' > /dev/stderr;
+	echo 'entrypoint.sh: Directory "/config" was not found.' > /dev/stderr;
 	exit 1
 elif [ ! -r "/config/luadns.ini" ]; then
-	echo 'requestSSL.sh: Credential file luadns.ini was not found in "/config"' > /dev/stderr;
+	echo 'entrypoint.sh: Credential file luadns.ini was not found in "/config"' > /dev/stderr;
 	exit 1;
+fi
+
+if [ -n "$DOMAINS" ]; then
+	echo 'entrypoint.sh: Requesting Certificates for domains found in $DOMAINS environment variable.';
+	for DOMAIN in $DOMAINS; do
+		autocert.sh certonly --domains "$DOMAIN";
+	done;
 fi
 
 # Start Jobs
