@@ -1,6 +1,7 @@
 FROM alpine:latest
 
-ENV EMAIL='email@example.com'
+ENV DOMAIN="example.com"
+ENV EMAIL="email@example.com"
 VOLUME ["config"]
 
 COPY autocert.sh            /usr/sbin/autocert.sh

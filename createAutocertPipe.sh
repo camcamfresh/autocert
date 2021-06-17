@@ -1,16 +1,21 @@
 #!/bin/sh
+# Author : Cameron S.
+# License: https://www.gnu.org/licenses/gpl-3.0.en.html
 
-if [ ! -e '/config/autocert.pipe' ]; then
-    mkfifo -m 600 /config/autocert.pipe;
-fi
+[ -e '/config/certs/autocert.pipe' ] && rm -f /config/certs/autocert.pipe;
+mkfifo -m 222 /config/certs/autocert.pipe;
+
+# Kill process group when this process dies.
+trap 'rm -f /config/certs/autocert.pipe; trap - SIGTERM && kill 0' SIGINT SIGTERM EXIT;
 
 while true; do
     if read MSG; then
         case "$MSG" in
-            ('autocert.sh '*) $MSG &;;
-            (*) autocert.sh &;;
+            'autocert.sh '*) 
+                $MSG &;;
+            *) 
+                echo "Invalid Request on Autocert Pipe: $MSG" > /dev/stderr;
+                autocert.sh &;;
         esac
     fi
-done < /config/autocert.pipe;
-
-rm -f /config/autocert.pipe;
+done < /config/certs/autocert.pipe;
