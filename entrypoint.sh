@@ -23,7 +23,21 @@ if [ -n "$DOMAINS" ]; then
 	done;
 fi
 
-# Start Jobs
-createAutocertPipe.sh &
-crond -f;
+# Start Cron fro Renewals
+crond;
+
+# Listen for Request on UNIX Socket
+trap 'rm -f /config/cert/autocert.sock; trap - SIGTERM && kill 0' SIGINT SIGTERM EXIT;
+
+while true; do
+	MSG=$(socat unix-listen:/config/cert/autocert.sock stdout);
+	case "$MSG" in
+        'autocert.sh '*) 
+            $MSG &;;
+        *) 
+            echo "Invalid Request on Autocert Pipe: $MSG" > /dev/stderr;
+            autocert.sh &;;
+    esac
+done
+
 exit 1;

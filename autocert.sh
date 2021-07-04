@@ -4,7 +4,7 @@
 
 invalid_usage() {
     echo "Invalid Usage: This is a daemon wrapper around certbot that adds authentication.";
-    certbot -h | sed "s/certbot \[SUBCOMMAND\]/autocert.sh (certonly|renew|revoke)/";
+    certbot -h | sed "s/certbot \[SUBCOMMAND\]/autocert.sh (certonly|delete|enhance|renew|revoke)/";
     exit 1;
 } > /dev/stderr
 
@@ -52,7 +52,7 @@ while [ "$1" != '' ]; do
         '--server') shift;;
         '--config'|'-c') shift;;
         
-        # Add Options
+        # Add Other Options
         '--cert-name')
             shift;
             CERT_NAME="$1";;
@@ -101,13 +101,7 @@ if [ -n "$KEY_SIZE" ]; then
 fi
 
 # Log Operation
-if [ "$SUBCOMMAND" = 'certonly' ]; then
-    echo "autocert.sh: Requesting Certificate for $CERT_NAME with domains: $DOMAINS";
-elif [ "$SUBCOMMAND" = 'renew' ]; then
-    echo "autocert.sh: Renewing all previously obtained certificates near expiry.";
-else
-    echo "autocert.sh Revoking Certificate $CERT_NAME";
-fi
+echo "$0: Performing $SUBCOMMAND operation on $CERT_NAME for $DOMAINS with options $OPTIONS";
 
 # Execute Operation
 certbot "$SUBCOMMAND" \
@@ -122,16 +116,17 @@ certbot "$SUBCOMMAND" \
 # Process Status
 STATUS=$?
 if [ "$STATUS" -eq 0 ]; then
-    echo "autocert.sh Successfully Executed $SUBCOMMAND";
+    echo "$0: Successfully Executed $SUBCOMMAND on $CERT_NAME";
 else
-    echo "autocert.sh: An error occured executing $SUBCOMMAND" > /dev/stderr;
-    exit 1;
+    echo "$0: An error occured executing $SUBCOMMAND on $CERT_NAME" > /dev/stderr;
+    exit $STATUS;
 fi
 
-# Place Certificate Copies in /certs directory.
-echo 'autocert.sh: Placing Existing Certificates in /certs directory';
+# Place Certificate Copies in /cert directory.
+echo "$0: Placing Existing Certificates in /config/cert directory";
+
 CERT_PATH="/config/data/live/$CERT_NAME";
-SAVE_PATH="/config/certs/$CERT_NAME";
+SAVE_PATH="/config/cert/$CERT_NAME";
 if [ -d "$CERT_PATH" ]; then
     [ -d "$SAVE_PATH" ] || mkdir -p "$SAVE_PATH";
     find "$CERT_PATH" -type l -exec cp {} "$SAVE_PATH" \;;
