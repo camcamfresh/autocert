@@ -16,7 +16,7 @@ fi
 # Kill entire process group when this process dies.
 trap 'trap - SIGTERM && kill 0' SIGINT SIGTERM EXIT;
 
-if [ -n "$DOMAINS" ]; then
+if [ -n "$DOMAINS" && -n "$EMAIL" ]; then
 	echo 'entrypoint.sh: Requesting Certificates for domains found in $DOMAINS environment variable.';
 	for DOMAIN in $DOMAINS; do
 		autocert.sh certonly --domains "$DOMAIN";

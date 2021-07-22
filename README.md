@@ -48,6 +48,7 @@ autocert.sh certonly -d 'example.com' -d '*.example.com' --cert-name 'wildcard_e
 Socket Execution
 ```sh
 echo "autocert.sh certonly -d 'example.com' -d '*.example.com'" | socat unix-client:autocert.sock -;
+echo "autocert.sh certonly -d 'example.com' -d '*.example.com'" | socat unix-client:autocert.sock stdin;
 echo "autocert.sh certonly -d 'example.com' -d '*.example.com'" | nc -U autocert.sock;
 ```
 
