@@ -2,13 +2,12 @@ FROM alpine:latest
 
 ENV DOMAIN="example.com"
 ENV EMAIL="email@example.com"
-VOLUME ["config"]
+VOLUME ["/config"]
 
 COPY autocert.sh            /usr/sbin/autocert.sh
 COPY entrypoint.sh          /entrypoint.sh
 
 RUN chmod +x /entrypoint.sh /usr/sbin/autocert.sh &&\
-    echo '0 */6 * * * autocert.sh renew' | crontab - &&\
     apk update &&\
     apk upgrade &&\
     apk add py3-pip gcc python3-dev musl-dev libffi-dev cargo openssl-dev socat &&\

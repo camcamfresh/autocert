@@ -3,8 +3,8 @@
 # License: https://www.gnu.org/licenses/gpl-3.0.en.html
 
 invalid_usage() {
-    echo "Invalid Usage: This is a daemon wrapper around certbot that adds authentication.";
-    certbot -h | sed "s/certbot \[SUBCOMMAND\]/autocert.sh (certonly|delete|enhance|renew|revoke)/";
+    echo "$0: Invalid usage; this is a daemon wrapper around certbot that adds authentication.";
+    certbot -h | sed 's/certbot \[SUBCOMMAND\]/autocert.sh (certonly|delete|enhance|renew|revoke)/';
     exit 1;
 } > /dev/stderr
 
@@ -79,7 +79,7 @@ done
 # Set Certificate Name and Domains
 if [ -n "$DOMAINS" ]; then
     if [ ! "$CERT_NAME" ]; then
-        CERT_NAME=$(echo $DOMAINS | sed 's|(.*)(,.+)?|\1|');
+        CERT_NAME=$(echo $DOMAINS | sed 's/,.*//');
     fi
     OPTIONS="$OPTIONS --domains $DOMAINS";
 fi
@@ -107,9 +107,9 @@ echo "$0: Performing $SUBCOMMAND operation on $CERT_NAME for $DOMAINS with optio
 certbot "$SUBCOMMAND" \
     --agree-tos \
     --expand \
-    --config-dir "/config/data" \
+    --config-dir '/config/data' \
     --dns-luadns \
-    --dns-luadns-credentials "/config/luadns.ini" \
+    --dns-luadns-credentials '/config/luadns.ini' \
     --non-interactive \
     $OPTIONS;
 
