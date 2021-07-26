@@ -14,14 +14,10 @@ The wrapper executes certbot in non-interactive mode, accepts all ACME Subscribe
 ## Container Configuration
 There are a few variables that may need to be set in order for autocert to execute properly.
 ```dockerfile
-ENV DOMAINS="example.com"
-ENV EMAIL="email@example.com"
+ENV DEFAULT_EMAIL="email@example.com"
 VOLUME "/config"
 ```
- - `DOMAINS` - [OPTIONAL] domains to request upon startup.
-   - Comma-delineated domains will create a single certificate
-   - Space-delineated domains create separate certificates.
- - `EMAIL` - [OPTIONAL] an email for certbot to use by default and for startup.
+ - `EMAIL` - [OPTIONAL] an email for certbot to use by default if not provided.
  - `/config` - the folder path for configuration within the container:
    - `cert/` contains hard copies of SSL certificates from `data/live`.
    - `data/` contain's certbot's previous work & archieves.
@@ -34,7 +30,7 @@ Enviroment variables should be set prior to testing this container.
 
 ## Container Execution
 ```bash
-docker run -e EMAIL='email@example.com' -v /config/:/config/ camcamfresh/autocert
+docker run -e DEFAULT_EMAIL='email@example.com' -v /config/:/config/ camcamfresh/autocert
 ```
 
 ## Autocert Execution
@@ -43,6 +39,8 @@ This wrapper works with most preexisting commands. Just replace `certbot` with `
 General Exection
 ```sh
 autocert.sh certonly -d 'example.com' -d '*.example.com' --cert-name 'wildcard_example.com'
+autocert.sh renew
+autocert.sh revoke --cert-name 'wildcard_example.com'
 ```
 
 Socket Execution
@@ -52,4 +50,4 @@ echo "autocert.sh certonly -d 'example.com' -d '*.example.com'" | socat unix-cli
 echo "autocert.sh certonly -d 'example.com' -d '*.example.com'" | nc -U autocert.sock;
 ```
 
-Using this code requires the use of LuaDNS as a DNS provider. However it can quickly be changed to another DNS provider by forking the code and changing the dns-plugin to another supported DNS provider (see Certbot's website for available providers).
+Using this code requires the use of LuaDNS as a DNS provider. However it can be changed to another DNS provider by forking the code and changing the dns-plugin to another supported DNS provider (see Certbot's website for available providers).
